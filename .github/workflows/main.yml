@@ -50,7 +50,7 @@ jobs:
         shell: bash
         run: |
           repo_url=https://registry.hub.docker.com/v2/repositories/library
-          curl -L -s ${repo_url}/${{ github.event.inputs.image_name }}/tags?page_size=100 | jq '."results"[]["name"]'
+          curl -L -s ${repo_url}/${{ github.event.inputs.pull_url }}/tags?page_size=100 | jq '."results"[]["name"]'
           # curl -s 'https://registry.hub.docker.com/v2/repositories/library/${{ github.event.inputs.image_name }}/tags/' | jq '."results"[]["name"]'
       - name: Check docker image
         shell: bash
