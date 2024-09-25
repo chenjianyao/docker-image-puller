@@ -11,7 +11,7 @@ on:
     inputs:
       version:
         type: string
-        description: New version number in X.Y.Z
+        description: image name (python:3.11.10-slim-bookworm)
         required: true
 
 concurrency:
@@ -30,10 +30,16 @@ jobs:
         with:
           path: repository
           submodules: true
-      - name: Docker pull
+      - name: Docker version
         shell: bash
         run: |
           # Clean up workspace
           path="${{ github.workspace }}/repository/src/workspace"
             
           docker --version
+          docker compose version
+      - name: Check docker image
+        shell: bash
+        run: |
+          docker pull ${{ github.event.inputs.version }}
+          docker images
