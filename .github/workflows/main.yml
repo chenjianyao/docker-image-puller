@@ -56,6 +56,10 @@ jobs:
         run: |
           mkdir -p build/images
           docker image save -o build/images/export.img ${{ github.event.inputs.image_name }}:${{ github.event.inputs.image_version }}
+          
+          # echo "=== load image $1 ==="
+          # docker load -i build/images/export.img
+          
       # 上传img.xz文件
       - name: Upload docker image
         uses: actions/upload-artifact@v4
@@ -63,4 +67,3 @@ jobs:
           name: ${{ github.event.inputs.image_name }}_${{ github.event.inputs.image_version }}.img
           path: build/images/export.img
           retention-days: 1
-      
