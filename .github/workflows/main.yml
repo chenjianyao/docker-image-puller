@@ -1,4 +1,4 @@
-name: Release
+name: Docker image pull
 
 on:
   repository_dispatch:
@@ -11,11 +11,15 @@ on:
     inputs:
       image_name:
         type: string
-        description: image name (python)
+        description: image name (jenkins)
+        required: true
+      pull_url:
+        type: string
+        description: image name (jenkins/jenkins)
         required: true
       image_version:
         type: string
-        description: image version (3.11.10-slim-bookworm)
+        description: image version (2.478-jdk17)
         required: true
 
 concurrency:
@@ -45,25 +49,27 @@ jobs:
       - name: List image all tag
         shell: bash
         run: |
-         # curl -s 'https://registry.hub.docker.com/v2/repositories/library/${{ github.event.inputs.image_name }}/tags/' | jq '."results"[]["name"]'
+          repo_url=https://registry.hub.docker.com/v2/repositories/library
+          image_name= ${{ github.event.inputs.image_name }}
+          curl -L -s ${repo_url}/${image_name}/tags?page_size=100 | jq '."results"[]["name"]'
+          # curl -s 'https://registry.hub.docker.com/v2/repositories/library/${{ github.event.inputs.image_name }}/tags/' | jq '."results"[]["name"]'
       - name: Check docker image
         shell: bash
         run: |
-          docker pull ${{ github.event.inputs.image_name }}:${{ github.event.inputs.image_version }}
+          docker pull ${{ github.event.inputs.pull_url }}:${{ github.event.inputs.image_version }}
           docker images
       - name: Export docker image
         shell: bash
         run: |
-          mkdir -p build/images
-          docker image save -o build/images/export.img ${{ github.event.inputs.image_name }}:${{ github.event.inputs.image_version }}
+          docker image save -o ${{ github.event.inputs.image_name }}-${{ github.event.inputs.image_version }}.img ${{ github.event.inputs.pull_url }}:${{ github.event.inputs.image_version }}
           
           # echo "=== load image $1 ==="
-          # docker load -i build/images/export.img
+          # docker load -i ${{ github.event.inputs.image_name }}-${{ github.event.inputs.image_version }}.img
           
       # 上传img.xz文件
       - name: Upload docker image
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ github.event.inputs.image_name }}_${{ github.event.inputs.image_version }}.img
-          path: build/images/export.img
+          name: ${{ github.event.inputs.image_name }}-${{ github.event.inputs.image_version }}.img
+          path: ${{ github.event.inputs.image_name }}-${{ github.event.inputs.image_version }}.img
           retention-days: 1
