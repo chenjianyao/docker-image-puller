@@ -1,1 +1,34 @@
+name: Release
 
+on:
+  repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      version:
+        type: string
+        description: New version number in X.Y.Z
+        required: true
+
+concurrency:
+  group: ci-buildtrain-${{ github.ref }}-release-v3
+  cancel-in-progress: true
+
+jobs:
+  # 启动
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: '["generate_image", "generate_debpackage"]'
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          path: repository
+          submodules: true
+      - name: Docker pull
+        shell: bash
+        run: |
+          # Clean up workspace
+          path="${{ github.workspace }}/repository/src/workspace"
+            
+          docker --version
