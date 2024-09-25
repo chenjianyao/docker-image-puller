@@ -15,7 +15,7 @@ on:
         required: true
       pull_url:
         type: string
-        description: image name (jenkins/jenkins)
+        description: pull url (jenkins/jenkins)
         required: true
       image_version:
         type: string
@@ -50,8 +50,7 @@ jobs:
         shell: bash
         run: |
           repo_url=https://registry.hub.docker.com/v2/repositories/library
-          image_name= ${{ github.event.inputs.image_name }}
-          curl -L -s ${repo_url}/${image_name}/tags?page_size=100 | jq '."results"[]["name"]'
+          curl -L -s ${repo_url}/${{ github.event.inputs.image_name }}/tags?page_size=100 | jq '."results"[]["name"]'
           # curl -s 'https://registry.hub.docker.com/v2/repositories/library/${{ github.event.inputs.image_name }}/tags/' | jq '."results"[]["name"]'
       - name: Check docker image
         shell: bash
@@ -73,3 +72,4 @@ jobs:
           name: ${{ github.event.inputs.image_name }}-${{ github.event.inputs.image_version }}.img
           path: ${{ github.event.inputs.image_name }}-${{ github.event.inputs.image_version }}.img
           retention-days: 1
+ 
