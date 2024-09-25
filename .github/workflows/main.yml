@@ -43,3 +43,14 @@ jobs:
         run: |
           docker pull ${{ github.event.inputs.version }}
           docker images
+      - name: Export docker image
+        shell: bash
+        run: |
+          docker image save -o build/images/export.img ${{ github.event.inputs.version }}
+      # 上传img.xz文件
+      - name: Upload docker image
+        uses: actions/upload-artifact@v4
+        with:
+          name: export.img
+          path: build/images/export.img
+          retention-days: 1
