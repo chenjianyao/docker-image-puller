@@ -9,9 +9,13 @@ on:
       - "v*"   #Push events to matching v*,i.e. v1.0 v20.15.10
   workflow_dispatch:
     inputs:
-      version:
+      image_name:
         type: string
-        description: image name (python:3.11.10-slim-bookworm)
+        description: image name (python)
+        required: true
+      image_version:
+        type: string
+        description: image version (3.11.10-slim-bookworm)
         required: true
 
 concurrency:
@@ -38,20 +42,25 @@ jobs:
             
           docker --version
           docker compose version
+      - name: List image all tag
+        shell: bash
+        run: |
+          curl -s 'https://registry.hub.docker.com/v2/repositories/library/${{ github.event.inputs.image_name }}/tags/' | jq '."results"[]["name"]'
       - name: Check docker image
         shell: bash
         run: |
-          docker pull ${{ github.event.inputs.version }}
+          docker pull ${{ github.event.inputs.image_name }}:${{ github.event.inputs.image_version }}
           docker images
       - name: Export docker image
         shell: bash
         run: |
           mkdir -p build/images
-          docker image save -o build/images/export.img ${{ github.event.inputs.version }}
+          docker image save -o build/images/export.img ${{ github.event.inputs.image_name }}:${{ github.event.inputs.image_version }}
       # 上传img.xz文件
       - name: Upload docker image
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ github.event.inputs.version }}.img
+          name: ${{ github.event.inputs.image_name }}_${{ github.event.inputs.image_version }}.img
           path: build/images/export.img
           retention-days: 1
+      
