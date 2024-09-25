@@ -46,6 +46,7 @@ jobs:
       - name: Export docker image
         shell: bash
         run: |
+          mkdir -p build/images
           docker image save -o build/images/export.img ${{ github.event.inputs.version }}
       # 上传img.xz文件
       - name: Upload docker image
