@@ -21,14 +21,17 @@ on:
         type: string
         description: image version (2.478-jdk17)
         required: true
-
+env:
+  ALIYUN_REGISTRY: "${{ secrets.ALIYUN_REGISTRY }}"
+  ALIYUN_NAME_SPACE: "${{ secrets.ALIYUN_NAME_SPACE }}"
+  
 concurrency:
-  group: ci-buildtrain-${{ github.ref }}-release-v3
+  group: ci-buildtrain-${{ github.ref }}-sync-v1
   cancel-in-progress: true
 
 jobs:
   # 启动
-  setup:
+  sync:
     runs-on: ubuntu-latest
     outputs:
       matrix: '["generate_image", "generate_debpackage"]'
