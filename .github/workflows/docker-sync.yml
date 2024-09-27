@@ -1,4 +1,4 @@
-name: Docker image pull
+name: Docker image sync
 
 on:
   repository_dispatch:
