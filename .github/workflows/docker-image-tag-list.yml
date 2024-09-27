@@ -28,15 +28,115 @@ jobs:
         with:
           path: repository
           submodules: true
-      - name: List docker image tag
+      
+      - name: 操作系统
         shell: bash
         run: |
+          image_name=os
+      
+      - name: Debian Tag
+        shell: bash
+        run: |
+          image_name=library/debian
+          
+          API_URL="https://registry.hub.docker.com/v2/repositories/${image_name}/tags/"
+          curl -L -s ${API_URL}?page_size=100 | jq -r '.results[] | .name'      
+         
+      - name: Ubuntu Tag
+        shell: bash
+        run: |
+          image_name=library/ubuntu
+          
+          API_URL="https://registry.hub.docker.com/v2/repositories/${image_name}/tags/"
+          curl -L -s ${API_URL}?page_size=100 | jq -r '.results[] | .name'  
+
+      - name: Alpine Tag
+        shell: bash
+        run: |
+          image_name=library/alpine
+          
+          API_URL="https://registry.hub.docker.com/v2/repositories/${image_name}/tags/"
+          curl -L -s ${API_URL}?page_size=100 | jq -r '.results[] | .name'  
+          
+      - name: 编程语言
+        shell: bash
+        run: |
+          image_name=progress
+
+      - name: Openjdk Tag
+        shell: bash
+        run: |
+          image_name=library/openjdk
+          
+          API_URL="https://registry.hub.docker.com/v2/repositories/${image_name}/tags/"
+          curl -L -s ${API_URL}?page_size=100 | jq -r '.results[] | .name' 
+
+      - name: Python Tag
+        shell: bash
+        run: |
+          image_name=library/python
+          
+          API_URL="https://registry.hub.docker.com/v2/repositories/${image_name}/tags/"
+          curl -L -s ${API_URL}?page_size=100 | jq -r '.results[] | .name' 
+
+      - name: Node Tag
+        shell: bash
+        run: |
+          image_name=library/node
+          
+          API_URL="https://registry.hub.docker.com/v2/repositories/${image_name}/tags/"
+          curl -L -s ${API_URL}?page_size=100 | jq -r '.results[] | .name' 
+
+      - name: Nginx Tag
+        shell: bash
+        run: |
+          image_name=library/nginx
+          
+          API_URL="https://registry.hub.docker.com/v2/repositories/${image_name}/tags/"
+          curl -L -s ${API_URL}?page_size=100 | jq -r '.results[] | .name' 
+      
+      - name: Redis Tag
+        shell: bash
+        run: |
+          image_name=library/redis
+          
+          API_URL="https://registry.hub.docker.com/v2/repositories/${image_name}/tags/"
+          curl -L -s ${API_URL}?page_size=100 | jq -r '.results[] | .name' 
+          
+      - name: Mysql Tag
+        shell: bash
+        run: |
+          image_name=library/mysql
+          
+          API_URL="https://registry.hub.docker.com/v2/repositories/${image_name}/tags/"
+          curl -L -s ${API_URL}?page_size=100 | jq -r '.results[] | .name' 
+
+      - name: Mongo Tag
+        shell: bash
+        run: |
+          image_name=library/mongo
+          
+          API_URL="https://registry.hub.docker.com/v2/repositories/${image_name}/tags/"
+          curl -L -s ${API_URL}?page_size=100 | jq -r '.results[] | .name' 
+
+
+
+      - name: Jenkins Tag
+        shell: bash
+        run: |
+          image_name=jenkins/jenkins
+          
           # 官方库
-          API_URL="https://registry.hub.docker.com/v2/repositories/library/${{ github.event.inputs.docker_hub_image_name }}/tags/"
+          API_URL="https://registry.hub.docker.com/v2/repositories/library/${image_name}/tags/"
           # 包含/ 为第三方库，
-          if [[ ${{ github.event.inputs.docker_hub_image_name }} == */* ]]; then
-            API_URL="https://registry.hub.docker.com/v2/repositories/${{ github.event.inputs.docker_hub_image_name }}/tags/"
+          if [[ ${image_name} == */* ]]; then
+            API_URL="https://registry.hub.docker.com/v2/repositories/${image_name}/tags/"
           fi  
 
           curl -L -s ${API_URL}?page_size=100 | jq -r '.results[] | .name' 
 
+
+          
+          
+          
+          
