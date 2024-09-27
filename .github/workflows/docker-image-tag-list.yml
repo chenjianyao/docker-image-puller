@@ -32,4 +32,4 @@ jobs:
         shell: bash
         run: |
           repo_url=https://hub.docker.com/r
-          curl -L -s ${repo_url}/${{ github.event.inputs.docker_hub_image_name }}/tags?page_size=100
+          docker search ${repo_url}
