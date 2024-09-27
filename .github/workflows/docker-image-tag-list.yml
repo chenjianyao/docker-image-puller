@@ -31,8 +31,8 @@ jobs:
       - name: List docker image tag
         shell: bash
         run: |
-          #repo_url='https://registry.hub.docker.com/v2/repositories/library'
-          repo_url='https://hub.docker.com/r'
+          # repo_url=https://registry.hub.docker.com/v2/repositories/library
+          repo_url=https://hub.docker.com/r
           curl -L -s ${repo_url}/${{ github.event.inputs.docker_hub_image_name }}/tags?page_size=100 | jq '."results"[]["name"]'
           # curl -L -s '${repo_url}/${{ github.event.inputs.docker_hub_image_name }}/tags?page_size=100' | jq '."results"[]["name"]'
           # curl -L -s ${repo_url}/${{ github.event.inputs.docker_hub_image_name }}/tags?page_size=100 | jq '."results"[]["name"]'
