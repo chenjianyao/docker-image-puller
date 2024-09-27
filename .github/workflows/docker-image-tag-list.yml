@@ -1,4 +1,4 @@
-name: Docker image sync
+name: Docker image tag query
 
 on:
   repository_dispatch:
