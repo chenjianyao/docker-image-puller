@@ -31,5 +31,4 @@ jobs:
       - name: List docker image tag
         shell: bash
         run: |
-          repo_url=https://hub.docker.com/r
-          docker search ${repo_url}
+          docker search ${{ github.event.inputs.docker_hub_image_name }}
