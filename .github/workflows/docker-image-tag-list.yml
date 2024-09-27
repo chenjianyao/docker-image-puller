@@ -38,5 +38,5 @@ jobs:
             API_URL="https://registry.hub.docker.com/v2/repositories/${{ github.event.inputs.docker_hub_image_name }}/tags/"
           fi  
 
-          curl -L -s ${API_URL}?page_size=100
+          curl -L -s ${API_URL}?page_size=100 | jq -r '.results[] | .name' 
 
