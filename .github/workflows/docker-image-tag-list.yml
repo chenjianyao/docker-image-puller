@@ -31,6 +31,12 @@ jobs:
       - name: List docker image tag
         shell: bash
         run: |
-          API_URL="https://registry.hub.docker.com/v2/repositories/${{ github.event.inputs.docker_hub_image_name }}/tags/"  
+          # 官方库
+          API_URL="https://registry.hub.docker.com/v2/repositories/library/${{ github.event.inputs.docker_hub_image_name }}/tags/"
+          # 包含/ 为第三方库，
+          if [[ ${{ github.event.inputs.docker_hub_image_name }} == */* ]]; then
+            API_URL="https://registry.hub.docker.com/v2/repositories/${{ github.event.inputs.docker_hub_image_name }}/tags/"
+          fi  
+
           curl -L -s ${API_URL}?page_size=100
 
