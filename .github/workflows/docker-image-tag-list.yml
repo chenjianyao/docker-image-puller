@@ -15,7 +15,7 @@ on:
         required: true
 
 concurrency:
-  group: ci-buildtrain-${{ github.ref }}-docker-image-sync-v1
+  group: ci-buildtrain-${{ github.ref }}-docker-image-tag-query-v1
   cancel-in-progress: true
 
 jobs:
@@ -31,4 +31,6 @@ jobs:
       - name: List docker image tag
         shell: bash
         run: |
-          docker search ${{ github.event.inputs.docker_hub_image_name }}
+          API_URL="https://registry.hub.docker.com/v2/repositories/${{ github.event.inputs.docker_hub_image_name }}/tags/"  
+          curl -L -s ${API_URL}?page_size=100
+
