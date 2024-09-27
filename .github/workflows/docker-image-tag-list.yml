@@ -1,0 +1,39 @@
+name: Docker image sync
+
+on:
+  repository_dispatch:
+  push:
+    branches:
+      - release1/*
+    tags:
+      - "v*"   #Push events to matching v*,i.e. v1.0 v20.15.10
+  workflow_dispatch:
+    inputs:
+      docker_hub_image_name:
+        type: string
+        description: image name in docker hub (jenkins/jenkins)
+        required: true
+
+concurrency:
+  group: ci-buildtrain-${{ github.ref }}-docker-image-sync-v1
+  cancel-in-progress: true
+
+jobs:
+  # 启动
+  image-tag-list:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          path: repository
+          submodules: true
+      - name: List docker image tag
+        shell: bash
+        run: |
+          #repo_url='https://registry.hub.docker.com/v2/repositories/library'
+          repo_url='https://hub.docker.com/r'
+          curl -L -s ${repo_url}/${{ github.event.inputs.docker_hub_image_name }}/tags?page_size=100 | jq '."results"[]["name"]'
+          # curl -L -s '${repo_url}/${{ github.event.inputs.docker_hub_image_name }}/tags?page_size=100' | jq '."results"[]["name"]'
+          # curl -L -s ${repo_url}/${{ github.event.inputs.docker_hub_image_name }}/tags?page_size=100 | jq '."results"[]["name"]'
+ 
