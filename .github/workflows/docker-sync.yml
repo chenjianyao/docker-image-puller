@@ -23,7 +23,7 @@ on:
         required: true
 env:
   ALIYUN_REGISTRY: "${{ secrets.ALIYUN_REGISTRY }}"
-  ALIYUN_NAME_SPACE: "${{ secrets.ALIYUN_NAMESPACE }}"
+  ALIYUN_NAME_SPACE: "${{ secrets.ALIYUN_REGISTRY_UAMESPACE }}"
   
 concurrency:
   group: ci-buildtrain-${{ github.ref }}-sync-v1
