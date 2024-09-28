@@ -59,12 +59,6 @@ jobs:
             
           docker --version
           docker compose version
-      - name: List image all tag
-        shell: bash
-        run: |
-          repo_url=https://registry.hub.docker.com/v2/repositories/library
-          curl -L -s ${repo_url}/${{ github.event.inputs.image_name }}/tags?page_size=100 | jq '."results"[]["name"]'
-          # curl -s 'https://registry.hub.docker.com/v2/repositories/library/${{ github.event.inputs.image_name }}/tags/' | jq '."results"[]["name"]'
       - name: Check docker image
         shell: bash
         run: |
@@ -73,16 +67,15 @@ jobs:
       - name: Export docker image
         shell: bash
         run: |
-          docker image save -o ${{ github.event.inputs.image_name }}-${{ github.event.inputs.image_version }}.img ${{ github.event.inputs.pull_url }}:${{ github.event.inputs.image_version }}
-          
-          # echo "=== load image $1 ==="
-          # docker load -i ${{ github.event.inputs.image_name }}-${{ github.event.inputs.image_version }}.img
-          
-      # 上传img.xz文件
-      - name: Upload docker image
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ github.event.inputs.image_name }}-${{ github.event.inputs.image_version }}.img
-          path: ${{ github.event.inputs.image_name }}-${{ github.event.inputs.image_version }}.img
-          retention-days: 1
+          # docker image save -o ${{ github.event.inputs.image_name }}-${{ github.event.inputs.image_version }}.img ${{ github.event.inputs.pull_url }}:${{ github.event.inputs.image_version }}
+          docker pull ${{ github.event.inputs.image_name }}
+          # 获取镜像的完整名称，例如kasmweb/nginx:1.25.3（命名空间/镜像名:版本号）
+          image=${{ github.event.inputs.image_name }}
+          # 获取 镜像名:版本号  例如nginx:1.25.3
+          image_name_tag=$(echo "$image" | awk -F'/' '{print $NF}')
+          new_image="$ALIYUN_REGISTRY/$ALIYUN_NAME_SPACE/$image_name_tag"
+          echo "docker tag $image $new_image"
+          docker tag $image $new_image
+          echo "docker push $new_image"
+          docker push $new_image
  
